@@ -1,4 +1,4 @@
-name: Tests
+name: TestsConAccion
 
 on:
   push:
@@ -14,61 +14,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3
+      - uses: Billones142/java-jacoco-test@main
         with:
-          java-version: '17'
-          distribution: 'temurin'
-          cache: maven
-      - name: Test with Maven
-        run: mvn clean test
-
-      - name: JaCoCo Code Coverage Report
-        id: jacoco_reporter
-        uses: PavanMudigonda/jacoco-reporter@v4.8
-        with:
-          coverage_results_path: target/my-reports/jacoco.xml
-          coverage_report_name: Coverage
-          coverage_report_title: JaCoCo
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          skip_check_run: false
-          minimum_coverage: 90
-          fail_below_threshold: false
-          publish_only_summary: false
-
-      - name: create badge
-        uses: emibcn/badge-action@v2.0.2
-        with:
-          label: 'Test coverage'
-          status: ${{ steps.jacoco_reporter.outputs.coveragePercentageString }}
-          path: badge.svg
-          color: ${{
-            steps.jacoco_reporter.outputs.coveragePercentage > 90 && 'green'              ||
-            steps.jacoco_reporter.outputs.coveragePercentage > 80 && 'yellow,green'       ||
-            steps.jacoco_reporter.outputs.coveragePercentage > 70 && 'yellow'             ||
-            steps.jacoco_reporter.outputs.coveragePercentage > 60 && 'orange,yellow'      ||
-            steps.jacoco_reporter.outputs.coveragePercentage > 50 && 'orange'             ||
-            steps.jacoco_reporter.outputs.coveragePercentage > 40 && 'red,orange'         ||
-            steps.jacoco_reporter.outputs.coveragePercentage > 30 && 'red,red,orange'     ||
-            steps.jacoco_reporter.outputs.coveragePercentage > 20 && 'red,red,red,orange' ||
-            'red' }}
-
-      - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v3
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-          
-    
-      - name: Commit and Push Generated Files
-        run: |
-          git rm --cached -r .
-          
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-
-          git add -f badge.svg
-          git add -f target/my-reports/*
-          
-          git commit -m "Add generated files"
-          git push --force origin HEAD:reports
+          token: ${{ secrets.GITHUB_TOKEN }}
+          reports_path: "target/my-reports/*"
+          branch_name: "reports"
+          generate_svg: "true"
