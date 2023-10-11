@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: Billones142/java-jacoco-test@main
+      - uses: Billones142/java-jacoco-test@v1.5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           reports_path: "target/my-reports/*"
